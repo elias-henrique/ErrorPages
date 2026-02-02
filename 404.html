@@ -1,0 +1,61 @@
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="description" content="Jogue um mini shooter para destruir o erro 404 e voltar para a home." />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#02030a" />
+
+  <title>404 - Page Not Found</title>
+
+  <link rel="preload" href="./static/sound/bubble.mp3" as="audio" type="audio/mpeg" />
+  <link rel="stylesheet" href="./static/css/game.css" />
+</head>
+
+<body data-error="404" data-error-text="404">
+  <main class="page" aria-label="Tela 404 com mini game">
+    <canvas
+      id="game"
+      class="game-canvas"
+      role="img"
+      aria-label="Mini game para destruir o erro 404 e voltar para a home."
+    ></canvas>
+
+    <section
+      id="overlay"
+      class="overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="overlay-title"
+      aria-describedby="overlay-description"
+      aria-hidden="true"
+      tabindex="-1"
+      data-home-url="/home"
+    >
+      <h1 id="overlay-title" class="overlay__title">Você destruiu o 404!</h1>
+      <p id="overlay-description" class="overlay__text">
+        Erro eliminado com sucesso. Quer jogar de novo ou voltar pra /home?
+      </p>
+
+      <div class="overlay__actions" role="group" aria-label="Opções após vencer o jogo">
+        <button class="btn" id="restartBtn" type="button">Reiniciar</button>
+        <button class="btn btn--secondary" id="homeBtn" type="button">Voltar para /home</button>
+      </div>
+    </section>
+
+    <p id="hint" class="hint" aria-live="polite">
+      Mova o mouse/toque para controlar a nave &nbsp;•&nbsp; Segure para atirar
+    </p>
+
+    <noscript>
+      <p class="noscript">
+        Seu navegador está com JavaScript desativado. Volte para
+        <a href="/home">/home</a>.
+      </p>
+    </noscript>
+  </main>
+
+  <script src="./static/js/game.js" defer></script>
+</body>
+</html>

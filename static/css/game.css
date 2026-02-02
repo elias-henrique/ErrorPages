@@ -1,0 +1,275 @@
+/* ==========================================================================
+   Error Galaxy Shooter — UI Layer
+   - Layout simples, acessível e responsivo
+   - Animações respeitam prefers-reduced-motion
+   - Temas customizáveis por tipo de erro
+   ========================================================================== */
+
+:root {
+    /* Cores base padrão (tema azul - 404) */
+    --bg: #02030a;
+    --panel: rgba(2, 6, 23, 0.82);
+    --text: #e5e7eb;
+    --muted: rgba(229, 231, 235, 0.72);
+
+    --accent: #38bdf8;
+    --accent2: #6366f1;
+
+    --btn-bg: rgba(56, 189, 248, 0.18);
+    --btn-border: rgba(56, 189, 248, 0.35);
+
+    --nebula-color1: rgba(56, 189, 248, 0.9);
+    --nebula-color2: rgba(79, 70, 229, 0.0);
+
+    /* Cores para gradientes de fundo */
+    --bg-gradient-start: #020617;
+    --bg-gradient-mid: #020617;
+    --bg-gradient-end: #000814;
+
+    /* Cores para peças do erro */
+    --piece-hue-min: 180;
+    --piece-hue-max: 300;
+
+    --shadow: 0 20px 80px rgba(0, 0, 0, 0.55);
+    --radius: 16px;
+}
+
+/* Tema laranja/amarelo - 403 Forbidden */
+body[data-error="403"] {
+    --bg: #0a0602;
+    --panel: rgba(23, 12, 2, 0.82);
+
+    --accent: #fbbf24;
+    --accent2: #f59e0b;
+
+    --btn-bg: rgba(251, 191, 36, 0.18);
+    --btn-border: rgba(251, 191, 36, 0.35);
+
+    --nebula-color1: rgba(251, 191, 36, 0.9);
+    --nebula-color2: rgba(245, 158, 11, 0.0);
+
+    /* Cores para gradientes de fundo */
+    --bg-gradient-start: #1a0f02;
+    --bg-gradient-mid: #0f0802;
+    --bg-gradient-end: #140a00;
+
+    /* Cores para peças do erro */
+    --piece-hue-min: 10;
+    --piece-hue-max: 70;
+}
+
+/* Tema vermelho - 500 Internal Server Error */
+body[data-error="500"] {
+    --bg: #0a0202;
+    --panel: rgba(23, 2, 2, 0.82);
+
+    --accent: #f87171;
+    --accent2: #dc2626;
+
+    --btn-bg: rgba(248, 113, 113, 0.18);
+    --btn-border: rgba(248, 113, 113, 0.35);
+
+    --nebula-color1: rgba(248, 113, 113, 0.9);
+    --nebula-color2: rgba(220, 38, 38, 0.0);
+
+    /* Cores para gradientes de fundo */
+    --bg-gradient-start: #1a0505;
+    --bg-gradient-mid: #0f0202;
+    --bg-gradient-end: #140000;
+
+    /* Cores para peças do erro */
+    --piece-hue-min: 320;
+    --piece-hue-max: 20;
+}
+
+/* Reset básico (sem exagero) */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Arial, sans-serif;
+    overflow: hidden;
+    /* o jogo é fullscreen */
+}
+
+.page {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+/* Canvas fullscreen */
+.game-canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    touch-action: none;
+    /* importante para pointer/touch sem scroll */
+}
+
+/* Hint inferior */
+.hint {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+
+    margin: 0;
+    padding: 10px 14px;
+
+    font-size: 14px;
+    line-height: 1.2;
+    color: var(--muted);
+
+    background: rgba(2, 6, 23, 0.55);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 999px;
+    backdrop-filter: blur(10px);
+
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Overlay (modal) */
+.overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(8px);
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 220ms ease;
+}
+
+.overlay.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.overlay__title {
+    margin: 0 0 8px;
+    font-size: clamp(28px, 4vw, 44px);
+    letter-spacing: -0.02em;
+    text-align: center;
+}
+
+.overlay__text {
+    margin: 0 0 18px;
+    max-width: 46ch;
+    color: var(--muted);
+    text-align: center;
+}
+
+.overlay__actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Card interno do overlay (visual “mais pro”) */
+.overlay>* {
+    position: relative;
+}
+
+.overlay::before {
+    content: "";
+    width: min(720px, calc(100% - 32px));
+    height: auto;
+
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(2, 6, 23, 0.92), rgba(0, 0, 0, 0.78));
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: var(--shadow);
+
+    /* tamanho do “card” se ajusta pelo conteúdo */
+    padding: 22px;
+    min-height: 220px;
+}
+
+/* Botões */
+.btn {
+    appearance: none;
+    border: 1px solid var(--btn-border);
+    background: var(--btn-bg);
+    color: var(--text);
+
+    padding: 10px 14px;
+    border-radius: 999px;
+
+    font-weight: 650;
+    letter-spacing: 0.01em;
+
+    cursor: pointer;
+    transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(56, 189, 248, 0.6);
+    background: rgba(56, 189, 248, 0.26);
+}
+
+.btn:active {
+    transform: translateY(0px);
+}
+
+.btn:focus-visible {
+    outline: 3px solid rgba(99, 102, 241, 0.65);
+    outline-offset: 3px;
+}
+
+.btn--secondary {
+    border-color: rgba(99, 102, 241, 0.35);
+    background: rgba(99, 102, 241, 0.16);
+}
+
+.btn--secondary:hover {
+    border-color: rgba(99, 102, 241, 0.6);
+    background: rgba(99, 102, 241, 0.24);
+}
+
+/* Noscript */
+.noscript {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    margin: 0;
+    padding: 10px 12px;
+
+    background: rgba(2, 6, 23, 0.85);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 10px;
+}
+
+/* Respeitar preferências do usuário */
+@media (prefers-reduced-motion: reduce) {
+    .overlay {
+        transition: none;
+    }
+
+    .btn {
+        transition: none;
+    }
+}

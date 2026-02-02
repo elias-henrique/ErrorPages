@@ -12,8 +12,8 @@ Esta é uma página de erro interativa onde o usuário controla uma nave espacia
 
 Cada tipo de erro tem seu próprio tema visual:
 - **404 (Not Found)** - Tema azul/roxo 🔵 com círculos flutuantes
-- **403 (Forbidden)** - Tema vermelho 🔴 com linhas cruzadas
-- **500 (Internal Server Error)** - Tema laranja/amarelo 🟡 com grade quebrada
+- **403 (Forbidden)** - Tema laranja/amarelo 🟡 com grade quebrada
+- **500 (Internal Server Error)** - Tema vermelho 🔴 com linhas cruzadas
 
 **Cada erro possui elementos visuais únicos:**
 - 🎨 Background com gradientes exclusivos

@@ -1,4 +1,6 @@
-# Error Pages - Mini Game Interativo 🎮
+<div align="center">
+  <img src="doc/thema.gif" alt="Error Pages - Mini Game Interativo" />
+</div>
 
 ## Sobre o Projeto
 
